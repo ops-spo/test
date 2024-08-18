@@ -11,6 +11,11 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         h1 {
             margin-top: 20px;
@@ -95,6 +100,16 @@
         }
         .history-item {
             margin-bottom: 5px;
+            font-size: 1em;
+        }
+        .history-item.gold {
+            color: gold;
+        }
+        .history-item.purple {
+            color: purple;
+        }
+        .history-item.blue {
+            color: blue;
         }
         .pagination {
             display: flex;
@@ -265,14 +280,14 @@
             const cardContainer = document.getElementById('card-container');
             cardContainer.innerHTML = ''; // 清空卡片显示区域
 
-            // 创建上下两排的卡片容器
+            // 创建上下两排的卡片显示区域
             const topRow = document.createElement('div');
             topRow.className = 'card-row';
             const bottomRow = document.createElement('div');
             bottomRow.className = 'card-row';
 
-            // 按顺序分配卡片到两排
-            for (let i = 0; i < 10; i++) {
+            // 将结果显示在上下两排
+            for (let i = 0; i < results.length; i++) {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
                 if (results[i] === '金') {
@@ -351,7 +366,14 @@
             pageData.forEach((card, index) => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
-                historyItem.textContent = `第 ${start + index + 1} 抽: ${card}`;
+                if (card === '金') {
+                    historyItem.classList.add('gold');
+                } else if (card === '紫') {
+                    historyItem.classList.add('purple');
+                } else if (card === '蓝') {
+                    historyItem.classList.add('blue');
+                }
+                historyItem.textContent = `第 ${start + index + 1} 次抽卡结果: ${card}`;
                 historyList.appendChild(historyItem);
             });
 

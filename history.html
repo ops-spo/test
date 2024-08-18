@@ -71,6 +71,7 @@
         let history = [];
 
         window.addEventListener('message', (event) => {
+            console.log('Message received:', event.data); // 调试信息
             if (event.data.history) {
                 history = event.data.history;
                 renderPage(1);

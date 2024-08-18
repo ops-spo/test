@@ -6,87 +6,96 @@
     <title>升空模拟器</title>
     <style>
         body {
+            text-align: center;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
         h1 {
             margin-top: 20px;
             font-size: 1.5em;
         }
         #card-container {
+            margin: 10px auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px;
-        }
-        .card-row {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .card {
-            width: 100px;
-            height: 150px;
-            margin: 5px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2em;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-        }
-        .gold { 
-            background-color: gold; 
-        }
-        .purple { 
-            background-color: purple; 
-        }
-        .blue { 
-            background-color: blue; 
-        }
-        #history-container {
-            margin: 20px auto;
+            gap: 5px;
             width: 90%;
-            max-width: 800px;
+            max-width: 600px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 10px;
+        }
+        .card-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .card {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            position: relative;
             overflow: hidden;
-            text-align: left;
+            transition: transform 0.5s;
         }
-        .record {
-            margin: 5px 0;
+        .gold-card {
+            background-color: gold;
+        }
+        .purple-card {
+            background-color: purple;
+        }
+        .blue-card {
+            background-color: blue;
+        }
+        .card.flip {
+            transform: rotateY(180deg);
+        }
+        .bling {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 1em;
+            color: gold;
+            animation: bling 1s infinite;
         }
-        .gold { color: gold; }
-        .purple { color: purple; }
-        .blue { color: blue; }
-        .pagination {
+        @keyframes bling {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        #result {
             margin-top: 10px;
             font-size: 1em;
-            text-align: center;
         }
-        .pagination button {
-            padding: 5px 10px;
-            margin: 0 5px;
+        button {
+            padding: 10px 15px;
+            font-size: 1em;
             cursor: pointer;
+            margin: 5px;
         }
         @media (max-width: 600px) {
             .card {
-                width: 80px;
-                height: 120px;
+                width: 50px;
+                height: 50px;
                 font-size: 1em;
             }
-            .pagination {
+            button {
+                padding: 8px 12px;
                 font-size: 0.9em;
             }
-            .pagination button {
-                padding: 4px 8px;
+            #result {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -94,108 +103,180 @@
 <body>
     <h1>升空模拟器</h1>
     <div id="card-container">
-        <div class="card-row" id="card-row-top"></div>
-        <div class="card-row" id="card-row-bottom"></div>
+        <!-- 卡片显示区域 -->
     </div>
-    <button onclick="drawCard()">单抽</button>
-    <button onclick="drawMultipleCards()">十连抽</button>
-    <button onclick="toggleHistory()">历史记录</button>
-
-    <div id="history-container" style="display: none;">
-        <h2>历史记录</h2>
-        <div id="records"></div>
-        <div id="pagination" class="pagination"></div>
-    </div>
+    <button onclick="drawCard()">单次升空</button>
+    <button onclick="drawMultipleCards()">十次升空</button>
+    <button onclick="openHistory()">历史记录</button>
+    <div id="result"></div>
 
     <script>
-        const cardRowTop = document.getElementById('card-row-top');
-        const cardRowBottom = document.getElementById('card-row-bottom');
-        const recordsElement = document.getElementById('records');
-        const paginationElement = document.getElementById('pagination');
-        const pageSize = 15;
-        let historyData = [];
-        let currentPage = 1;
+        const cards = [
+            { name: '金', baseProbability: 0.01 },
+            { name: '紫', baseProbability: 0.07 },
+            { name: '蓝', baseProbability: 0.92 }
+        ];
+
+        let historyData = []; // 用于存储历史记录
+        let drawCount = 0; // 记录抽卡次数
+        let noGoldCount = 0; // 记录未出金色卡的次数
+
+        function getDrawResult() {
+            drawCount++;
+            noGoldCount++;
+            let result;
+
+            // 处理紫色保底
+            if (drawCount % 10 === 0) {
+                result = '紫';
+            } else if (noGoldCount >= 70) {
+                // 70抽必定出金
+                result = '金';
+                noGoldCount = 0; // 重置计数
+            } else if (noGoldCount >= 60) {
+                // 60次不出金，增加金的概率
+                result = getRandomCard(0.01 + 0.1 * (noGoldCount - 60));
+            } else {
+                result = getRandomCard(0.01);
+            }
+
+            if (result === '金') {
+                noGoldCount = 0; // 出金则重置计数
+            }
+
+            return result;
+        }
 
         function drawCard() {
-            const card = drawSingleCard();
-            displayCard([card]);
-            addToHistory([card]);
+            const result = getDrawResult();
+            if (result === '金') {
+                showGoldCard(result); // 显示金色卡片的特效
+            } else {
+                showSingleCard(result);
+            }
+            addToHistory(result);
         }
 
         function drawMultipleCards() {
-            const cards = [];
+            const results = [];
+            let hasPurple = false;
+
             for (let i = 0; i < 10; i++) {
-                cards.push(drawSingleCard());
+                const result = getDrawResult();
+                results.push(result);
+                if (result === '紫') {
+                    hasPurple = true;
+                }
             }
-            displayCard(cards);
-            addToHistory(cards);
+
+            // 如果没有紫色卡片，则确保在结果中加入一个紫色卡片
+            if (!hasPurple) {
+                results[Math.floor(Math.random() * 10)] = '紫';
+            }
+
+            // 显示十次结果
+            showMultipleCards(results);
+            addToHistory(results);
         }
 
-        function drawSingleCard() {
-            const rand = Math.random();
-            if (rand < 0.01) return '金';
-            if (rand < 0.08) return '紫';
-            return '蓝';
+        function getRandomCard(goldProbability) {
+            const purpleProbability = cards[1].baseProbability;
+            const blueProbability = 1 - goldProbability - purpleProbability;
+            const random = Math.random();
+
+            if (random <= goldProbability) {
+                return '金';
+            } else if (random <= goldProbability + purpleProbability) {
+                return '紫';
+            } else {
+                return '蓝';
+            }
         }
 
-        function displayCard(cards) {
-            cardRowTop.innerHTML = '';
-            cardRowBottom.innerHTML = '';
-            const topCards = cards.slice(0, 5);
-            const bottomCards = cards.slice(5, 10);
+        function showSingleCard(cardName) {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = ''; // 清空卡片显示区域
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            if (cardName === '金') {
+                cardElement.classList.add('gold-card');
+            } else if (cardName === '紫') {
+                cardElement.classList.add('purple-card');
+            } else if (cardName === '蓝') {
+                cardElement.classList.add('blue-card');
+            }
+            cardElement.innerText = cardName;
+            cardContainer.appendChild(cardElement);
+        }
 
-            topCards.forEach(card => {
+        function showMultipleCards(results) {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = ''; // 清空卡片显示区域
+
+            // 创建上下两排的卡片容器
+            const topRow = document.createElement('div');
+            topRow.className = 'card-row';
+            const bottomRow = document.createElement('div');
+            bottomRow.className = 'card-row';
+
+            // 按顺序分配卡片到两排
+            for (let i = 0; i < 10; i++) {
                 const cardElement = document.createElement('div');
-                cardElement.className = 'card ' + card.toLowerCase();
-                cardElement.textContent = card;
-                cardRowTop.appendChild(cardElement);
-            });
-
-            bottomCards.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card ' + card.toLowerCase();
-                cardElement.textContent = card;
-                cardRowBottom.appendChild(cardElement);
-            });
-        }
-
-        function addToHistory(cards) {
-            historyData.push(...cards);
-            renderPage(1);
-        }
-
-        function renderPage(pageNumber) {
-            const start = (pageNumber - 1) * pageSize;
-            const end = start + pageSize;
-            const pageRecords = historyData.slice(start, end);
-
-            recordsElement.innerHTML = '';
-            pageRecords.forEach(record => {
-                const recordElement = document.createElement('div');
-                recordElement.className = 'record ' + record.toLowerCase();
-                recordElement.textContent = record;
-                recordsElement.appendChild(recordElement);
-            });
-
-            const totalPages = Math.ceil(historyData.length / pageSize);
-            paginationElement.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.onclick = () => {
-                    currentPage = i;
-                    renderPage(currentPage);
-                };
-                paginationElement.appendChild(pageButton);
+                cardElement.className = 'card';
+                if (results[i] === '金') {
+                    cardElement.classList.add('gold-card');
+                } else if (results[i] === '紫') {
+                    cardElement.classList.add('purple-card');
+                } else if (results[i] === '蓝') {
+                    cardElement.classList.add('blue-card');
+                }
+                cardElement.innerText = results[i];
+                if (i < 5) {
+                    topRow.appendChild(cardElement);
+                } else {
+                    bottomRow.appendChild(cardElement);
+                }
             }
+
+            // 将两排卡片添加到显示区域
+            cardContainer.appendChild(topRow);
+            cardContainer.appendChild(bottomRow);
         }
 
-        function toggleHistory() {
-            const historyContainer = document.getElementById('history-container');
-            historyContainer.style.display = historyContainer.style.display === 'none' ? 'block' : 'none';
-            if (historyContainer.style.display === 'block') {
-                renderPage(currentPage);
-            }
+        function showGoldCard(cardName) {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = ''; // 清空卡片显示区域
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            cardElement.classList.add('gold-card');
+
+            // 创建一个闪烁的效果
+            cardElement.innerHTML = `<div class="bling">Bling!</div>`;
+            cardContainer.appendChild(cardElement);
+
+            // 添加动画效果
+            setTimeout(() => {
+                cardElement.classList.add('flip');
+                cardElement.innerText = cardName;
+            }, 1000); // 延迟1秒
+
+            // 重置卡片状态
+            setTimeout(() => {
+                cardElement.classList.remove('flip');
+                cardElement.innerHTML = ''; // 清除动画效果
+                cardElement.innerText = cardName;
+            }, 2000); // 动画持续时间2秒
+        }
+
+        function addToHistory(cardNames) {
+            historyData.push(...cardNames);
+        }
+
+        function openHistory() {
+            const historyWindow = window.open('history.html', 'HistoryWindow', 'width=800,height=600');
+            historyWindow.addEventListener('load', () => {
+                historyWindow.postMessage({ history: historyData }, '*');
+            });
         }
     </script>
 </body>

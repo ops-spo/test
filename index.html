@@ -78,6 +78,15 @@
             margin-top: 10px;
             font-size: 1em;
         }
+        #history-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            display: none;
+        }
         button {
             padding: 10px 15px;
             font-size: 1em;
@@ -97,6 +106,9 @@
             #result {
                 font-size: 0.9em;
             }
+            #history-container {
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -107,8 +119,12 @@
     </div>
     <button onclick="drawCard()">单次升空</button>
     <button onclick="drawMultipleCards()">十次升空</button>
-    <button onclick="openHistory()">历史记录</button>
+    <button onclick="toggleHistory()">历史记录</button>
     <div id="result"></div>
+    <div id="history-container">
+        <h2>历史抽卡记录</h2>
+        <div id="history-list"></div>
+    </div>
 
     <script>
         const cards = [
@@ -154,7 +170,7 @@
             } else {
                 showSingleCard(result);
             }
-            addToHistory(result);
+            addToHistory([result]);
         }
 
         function drawMultipleCards() {
@@ -272,11 +288,22 @@
             historyData.push(...cardNames);
         }
 
-        function openHistory() {
-            const historyWindow = window.open('history.html', 'HistoryWindow', 'width=800,height=600');
-            historyWindow.addEventListener('load', () => {
-                historyWindow.postMessage({ history: historyData }, '*');
-            });
+        function toggleHistory() {
+            const historyContainer = document.getElementById('history-container');
+            const historyList = document.getElementById('history-list');
+            if (historyContainer.style.display === 'none') {
+                // 显示历史记录
+                historyList.innerHTML = ''; // 清空当前显示的历史记录
+                historyData.forEach((card, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.textContent = `第 ${index + 1} 次抽卡结果: ${card}`;
+                    historyList.appendChild(historyItem);
+                });
+                historyContainer.style.display = 'block';
+            } else {
+                // 隐藏历史记录
+                historyContainer.style.display = 'none';
+            }
         }
     </script>
 </body>

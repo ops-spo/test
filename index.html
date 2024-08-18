@@ -87,6 +87,35 @@
             max-width: 600px;
             display: none;
         }
+        #history-list {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+        .history-item {
+            margin-bottom: 5px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .page-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .page-btn:hover {
+            background-color: #ddd;
+        }
+        .active-page {
+            background-color: #ccc;
+            cursor: default;
+        }
         button {
             padding: 10px 15px;
             font-size: 1em;
@@ -109,6 +138,10 @@
             #history-container {
                 font-size: 0.9em;
             }
+            .page-btn {
+                padding: 5px 8px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -124,6 +157,7 @@
     <div id="history-container">
         <h2>历史抽卡记录</h2>
         <div id="history-list"></div>
+        <div class="pagination" id="pagination"></div>
     </div>
 
     <script>
@@ -136,6 +170,8 @@
         let historyData = []; // 用于存储历史记录
         let drawCount = 0; // 记录抽卡次数
         let noGoldCount = 0; // 记录未出金色卡的次数
+        let currentPage = 1; // 当前页码
+        const itemsPerPage = 10; // 每页显示的记录数
 
         function getDrawResult() {
             drawCount++;
@@ -286,23 +322,52 @@
 
         function addToHistory(cardNames) {
             historyData.push(...cardNames);
+            renderHistory();
         }
 
         function toggleHistory() {
             const historyContainer = document.getElementById('history-container');
-            const historyList = document.getElementById('history-list');
             if (historyContainer.style.display === 'none') {
-                // 显示历史记录
-                historyList.innerHTML = ''; // 清空当前显示的历史记录
-                historyData.forEach((card, index) => {
-                    const historyItem = document.createElement('div');
-                    historyItem.textContent = `第 ${index + 1} 次抽卡结果: ${card}`;
-                    historyList.appendChild(historyItem);
-                });
                 historyContainer.style.display = 'block';
+                renderHistory(); // 显示时渲染历史记录
             } else {
-                // 隐藏历史记录
                 historyContainer.style.display = 'none';
+            }
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('history-list');
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+            // 清空历史记录和分页按钮
+            historyList.innerHTML = '';
+            pagination.innerHTML = '';
+
+            // 渲染当前页的历史记录
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = historyData.slice(start, end);
+            pageData.forEach((card, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.textContent = `第 ${start + index + 1} 抽: ${card}`;
+                historyList.appendChild(historyItem);
+            });
+
+            // 渲染分页按钮
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.className = 'page-btn';
+                if (i === currentPage) {
+                    pageBtn.classList.add('active-page');
+                }
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderHistory();
+                });
+                pagination.appendChild(pageBtn);
             }
         }
     </script>

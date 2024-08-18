@@ -53,6 +53,20 @@
         .card.flip {
             transform: rotateY(180deg);
         }
+        .bling {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            color: gold;
+            animation: bling 1s infinite;
+        }
+        @keyframes bling {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
         #result {
             margin-top: 20px;
             font-size: 1.2em;
@@ -86,7 +100,7 @@
         let drawCount = 0; // 记录抽卡次数
         let noGoldCount = 0; // 记录未出金色卡的次数
 
-        function drawCard() {
+        function getDrawResult() {
             drawCount++;
             noGoldCount++;
             let result;
@@ -106,15 +120,20 @@
             }
 
             if (result === '金') {
+                noGoldCount = 0; // 出金则重置计数
+            }
+
+            return result;
+        }
+
+        function drawCard() {
+            const result = getDrawResult();
+            if (result === '金') {
                 showGoldCard(result); // 显示金色卡片的特效
             } else {
                 showSingleCard(result);
             }
             addToHistory(result);
-
-            if (result === '金') {
-                noGoldCount = 0; // 出金则重置计数
-            }
         }
 
         function drawMultipleCards() {
@@ -122,29 +141,10 @@
             let hasPurple = false;
 
             for (let i = 0; i < 10; i++) {
-                drawCount++;
-                noGoldCount++;
-                let result;
-
-                // 处理紫色保底
-                if ((drawCount % 10 === 0) && (noGoldCount % 10 === 0)) {
-                    result = '紫';
-                    hasPurple = true;
-                } else if (noGoldCount >= 70) {
-                    // 70抽必定出金
-                    result = '金';
-                    noGoldCount = 0; // 重置计数
-                } else if (noGoldCount >= 60) {
-                    // 60次不出金，增加金的概率
-                    result = getRandomCard(0.01 + 0.1 * (noGoldCount - 60));
-                } else {
-                    result = getRandomCard(0.01);
-                }
-
+                const result = getDrawResult();
                 results.push(result);
-
-                if (result === '金') {
-                    noGoldCount = 0; // 出金则重置计数
+                if (result === '紫') {
+                    hasPurple = true;
                 }
             }
 

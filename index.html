@@ -3,35 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>抽卡小游戏</title>
+    <title>优化版抽卡小游戏</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        #card-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            height: 300px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s;
+        }
+        #card {
+            font-size: 2em;
         }
         #result {
-            font-size: 2em;
             margin-top: 20px;
+            font-size: 1.2em;
         }
         button {
             padding: 10px 20px;
             font-size: 1.2em;
             cursor: pointer;
+            margin: 10px;
+        }
+        #history {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>抽卡小游戏</h1>
-    <button onclick="drawCard()">抽卡</button>
+    <h1>优化版抽卡小游戏</h1>
+    <div id="card-container">
+        <div id="card">?</div>
+    </div>
+    <button onclick="drawCard()">单抽</button>
+    <button onclick="drawMultipleCards()">十连抽</button>
     <div id="result"></div>
+    <div id="history">
+        <h2>历史记录</h2>
+        <ul id="history-list"></ul>
+    </div>
 
     <script>
-        const cards = ['SSR', 'SR', 'R', 'N'];
+        const cards = [
+            { name: 'SSR', probability: 0.05 },
+            { name: 'SR', probability: 0.15 },
+            { name: 'R', probability: 0.30 },
+            { name: 'N', probability: 0.50 }
+        ];
 
         function drawCard() {
-            const randomIndex = Math.floor(Math.random() * cards.length);
-            const result = cards[randomIndex];
-            document.getElementById('result').innerText = `你抽到了：${result}`;
+            const result = getRandomCard();
+            showCard(result);
+            addToHistory(result);
+        }
+
+        function drawMultipleCards() {
+            const results = [];
+            for (let i = 0; i < 10; i++) {
+                results.push(getRandomCard());
+            }
+            results.forEach(result => {
+                showCard(result);
+                addToHistory(result);
+            });
+        }
+
+        function getRandomCard() {
+            const random = Math.random();
+            let cumulativeProbability = 0;
+            for (let card of cards) {
+                cumulativeProbability += card.probability;
+                if (random <= cumulativeProbability) {
+                    return card.name;
+                }
+            }
+        }
+
+        function showCard(cardName) {
+            const cardContainer = document.getElementById('card-container');
+            const cardElement = document.getElementById('card');
+            cardElement.innerText = cardName;
+            cardContainer.style.transform = 'rotateY(360deg)';
+            setTimeout(() => {
+                cardContainer.style.transform = 'rotateY(0deg)';
+            }, 500);
+        }
+
+        function addToHistory(cardName) {
+            const historyList = document.getElementById('history-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = cardName;
+            historyList.appendChild(listItem);
         }
     </script>
 </body>

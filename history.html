@@ -34,6 +34,7 @@
         .record span {
             margin-right: 5px;
         }
+        /* 确保这些颜色样式生效 */
         .gold { color: gold; }
         .purple { color: purple; }
         .blue { color: blue; }
@@ -98,12 +99,12 @@
                 if (Array.isArray(record)) {
                     record.forEach(card => {
                         const cardSpan = document.createElement('span');
-                        cardSpan.className = card.toLowerCase();
+                        cardSpan.className = getCardClass(card);  // 使用 getCardClass 函数获取颜色类名
                         cardSpan.textContent = card + ' ';
                         recordElement.appendChild(cardSpan);
                     });
                 } else {
-                    recordElement.classList.add(record.toLowerCase());
+                    recordElement.classList.add(getCardClass(record));
                     recordElement.textContent = record;
                 }
 
@@ -118,6 +119,19 @@
             const pageIndicator = document.createElement('div');
             pageIndicator.textContent = `当前页: ${pageNumber} / ${totalPages}`;
             paginationElement.appendChild(pageIndicator);
+        }
+
+        // 根据卡片名获取对应的颜色类名
+        function getCardClass(cardName) {
+            const lowerName = cardName.toLowerCase();
+            if (lowerName.includes('gold')) {
+                return 'gold';
+            } else if (lowerName.includes('purple')) {
+                return 'purple';
+            } else if (lowerName.includes('blue')) {
+                return 'blue';
+            }
+            return '';
         }
 
         function renderPagination(totalPages, currentPage) {

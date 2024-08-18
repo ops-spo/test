@@ -23,6 +23,15 @@
         .history-item {
             margin: 5px 0;
         }
+        .gold-item {
+            color: gold;
+        }
+        .purple-item {
+            color: purple;
+        }
+        .blue-item {
+            color: blue;
+        }
         .pagination {
             margin-top: 10px;
         }
@@ -65,6 +74,7 @@
                 const item = document.createElement('div');
                 item.className = 'history-item';
                 item.textContent = record;
+                item.classList.add(getCardClass(record));
                 historyList.appendChild(item);
             });
 
@@ -78,6 +88,17 @@
                 button.addEventListener('click', () => renderHistory(i));
                 pagination.appendChild(button);
             }
+        }
+
+        function getCardClass(cardName) {
+            if (cardName === '金') {
+                return 'gold-item';
+            } else if (cardName === '紫') {
+                return 'purple-item';
+            } else if (cardName === '蓝') {
+                return 'blue-item';
+            }
+            return '';
         }
     </script>
 </body>

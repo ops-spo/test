@@ -19,18 +19,20 @@
         #card-container {
             margin: 10px auto;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            flex-wrap: wrap;
             gap: 5px;
             width: 90%;
             max-width: 600px;
-            height: auto;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
             padding: 10px;
+        }
+        .card-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
         }
         .card {
             width: 60px;
@@ -210,19 +212,35 @@
         function showMultipleCards(results) {
             const cardContainer = document.getElementById('card-container');
             cardContainer.innerHTML = ''; // 清空卡片显示区域
-            results.forEach(result => {
+
+            // 创建上下两排的卡片容器
+            const topRow = document.createElement('div');
+            topRow.className = 'card-row';
+            const bottomRow = document.createElement('div');
+            bottomRow.className = 'card-row';
+
+            // 按顺序分配卡片到两排
+            for (let i = 0; i < 10; i++) {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
-                if (result === '金') {
+                if (results[i] === '金') {
                     cardElement.classList.add('gold-card');
-                } else if (result === '紫') {
+                } else if (results[i] === '紫') {
                     cardElement.classList.add('purple-card');
-                } else if (result === '蓝') {
+                } else if (results[i] === '蓝') {
                     cardElement.classList.add('blue-card');
                 }
-                cardElement.innerText = result;
-                cardContainer.appendChild(cardElement);
-            });
+                cardElement.innerText = results[i];
+                if (i < 5) {
+                    topRow.appendChild(cardElement);
+                } else {
+                    bottomRow.appendChild(cardElement);
+                }
+            }
+
+            // 将两排卡片添加到显示区域
+            cardContainer.appendChild(topRow);
+            cardContainer.appendChild(bottomRow);
         }
 
         function showGoldCard(cardName) {

@@ -18,15 +18,37 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 300px;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 600px;
             height: 300px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.5s;
+            position: relative; /* 为特效提供定位空间 */
         }
-        #card {
-            font-size: 2em;
+        .card {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            position: relative; /* 为特效提供定位空间 */
+            overflow: hidden;
+        }
+        .gold-card {
+            background-color: gold; /* 金色卡片背景 */
+            color: #fff;
+            animation: goldFlash 1s ease-out;
+        }
+        @keyframes goldFlash {
+            0% { box-shadow: 0 0 10px gold; }
+            50% { box-shadow: 0 0 20px gold; }
+            100% { box-shadow: 0 0 10px gold; }
         }
         #result {
             margin-top: 20px;
@@ -43,7 +65,7 @@
 <body>
     <h1>升空模拟器</h1>
     <div id="card-container">
-        <div id="card">?</div>
+        <!-- 卡片显示区域 -->
     </div>
     <button onclick="drawCard()">单次升空</button>
     <button onclick="drawMultipleCards()">十次升空</button>
@@ -89,9 +111,36 @@
         }
 
         function drawMultipleCards() {
+            const results = [];
             for (let i = 0; i < 10; i++) {
-                drawCard();
+                drawCount++;
+                noGoldCount++;
+                let result;
+
+                // 处理紫色保底
+                if ((drawCount % 10 === 0) && (noGoldCount % 10 === 0)) {
+                    result = '紫';
+                } else if (noGoldCount >= 70) {
+                    // 70抽必定出金
+                    result = '金';
+                    noGoldCount = 0; // 重置计数
+                } else if (noGoldCount >= 60) {
+                    // 60次不出金，增加金的概率
+                    result = getRandomCard(0.01 + 0.1 * (noGoldCount - 60));
+                } else {
+                    result = getRandomCard(0.01);
+                }
+
+                results.push(result);
+                addToHistory(result);
+
+                if (result === '金') {
+                    noGoldCount = 0; // 出金则重置计数
+                }
             }
+
+            // 显示十次结果
+            showMultipleCards(results);
         }
 
         function getRandomCard(goldProbability) {
@@ -110,12 +159,31 @@
 
         function showCard(cardName) {
             const cardContainer = document.getElementById('card-container');
-            const cardElement = document.getElementById('card');
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            if (cardName === '金') {
+                cardElement.classList.add('gold-card');
+            }
             cardElement.innerText = cardName;
+            cardContainer.appendChild(cardElement);
             cardContainer.style.transform = 'rotateY(360deg)';
             setTimeout(() => {
                 cardContainer.style.transform = 'rotateY(0deg)';
             }, 500);
+        }
+
+        function showMultipleCards(results) {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = ''; // 清空当前卡片显示
+            results.forEach(result => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                if (result === '金') {
+                    cardElement.classList.add('gold-card');
+                }
+                cardElement.innerText = result;
+                cardContainer.appendChild(cardElement);
+            });
         }
 
         function addToHistory(cardName) {

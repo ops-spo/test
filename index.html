@@ -35,20 +35,19 @@
             align-items: center;
             font-size: 1.5em;
             border-radius: 10px;
-            background-color: #fff;
+            color: #fff;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
         }
         .gold-card {
             background-color: gold;
-            color: #fff;
-            animation: goldFlash 1s ease-out;
         }
-        @keyframes goldFlash {
-            0% { box-shadow: 0 0 10px gold; }
-            50% { box-shadow: 0 0 20px gold; }
-            100% { box-shadow: 0 0 10px gold; }
+        .purple-card {
+            background-color: purple;
+        }
+        .blue-card {
+            background-color: blue;
         }
         #result {
             margin-top: 20px;
@@ -164,7 +163,11 @@
             cardElement.className = 'card';
             if (cardName === '金') {
                 cardElement.classList.add('gold-card');
-            }
+            } else if (cardName === '紫') {
+                cardElement.classList.add('purple-card');
+            } else if (cardName === '蓝') {
+                cardElement.classList.add('blue-card');
+        }
             cardElement.innerText = cardName;
             cardContainer.appendChild(cardElement);
         }
@@ -177,6 +180,10 @@
                 cardElement.className = 'card';
                 if (result === '金') {
                     cardElement.classList.add('gold-card');
+                } else if (result === '紫') {
+                    cardElement.classList.add('purple-card');
+                } else if (result === '蓝') {
+                    cardElement.classList.add('blue-card');
                 }
                 cardElement.innerText = result;
                 cardContainer.appendChild(cardElement);

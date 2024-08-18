@@ -31,6 +31,9 @@
             margin: 5px 0;
             font-size: 1em;
         }
+        .record span {
+            margin-right: 5px;
+        }
         .gold { color: gold; }
         .purple { color: purple; }
         .blue { color: blue; }
@@ -42,6 +45,10 @@
             padding: 5px 10px;
             margin: 0 5px;
             cursor: pointer;
+        }
+        .pagination button[disabled] {
+            font-weight: bold;
+            background-color: #ddd;
         }
         @media (max-width: 600px) {
             .record {
@@ -87,20 +94,82 @@
             pageRecords.forEach(record => {
                 const recordElement = document.createElement('div');
                 recordElement.className = 'record';
-                recordElement.classList.add(record.toLowerCase());
-                recordElement.textContent = record;
+
+                if (Array.isArray(record)) {
+                    record.forEach(card => {
+                        const cardSpan = document.createElement('span');
+                        cardSpan.className = card.toLowerCase();
+                        cardSpan.textContent = card + ' ';
+                        recordElement.appendChild(cardSpan);
+                    });
+                } else {
+                    recordElement.classList.add(record.toLowerCase());
+                    recordElement.textContent = record;
+                }
+
                 recordsElement.appendChild(recordElement);
             });
 
             // Render pagination
             const totalPages = Math.ceil(history.length / pageSize);
+            renderPagination(totalPages, pageNumber);
+
+            // Display current page number
+            const pageIndicator = document.createElement('div');
+            pageIndicator.textContent = `当前页: ${pageNumber} / ${totalPages}`;
+            paginationElement.appendChild(pageIndicator);
+        }
+
+        function renderPagination(totalPages, currentPage) {
             paginationElement.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.onclick = () => renderPage(i);
-                paginationElement.appendChild(pageButton);
+
+            if (currentPage > 1) {
+                const prevButton = document.createElement('button');
+                prevButton.textContent = '上一页';
+                prevButton.onclick = () => renderPage(currentPage - 1);
+                paginationElement.appendChild(prevButton);
             }
+
+            if (totalPages <= 5) {
+                for (let i = 1; i <= totalPages; i++) {
+                    createPageButton(i, currentPage);
+                }
+            } else {
+                if (currentPage > 2) {
+                    createPageButton(1, currentPage);
+                    if (currentPage > 3) {
+                        paginationElement.appendChild(document.createTextNode('...'));
+                    }
+                }
+
+                for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+                    createPageButton(i, currentPage);
+                }
+
+                if (currentPage < totalPages - 1) {
+                    if (currentPage < totalPages - 2) {
+                        paginationElement.appendChild(document.createTextNode('...'));
+                    }
+                    createPageButton(totalPages, currentPage);
+                }
+            }
+
+            if (currentPage < totalPages) {
+                const nextButton = document.createElement('button');
+                nextButton.textContent = '下一页';
+                nextButton.onclick = () => renderPage(currentPage + 1);
+                paginationElement.appendChild(nextButton);
+            }
+        }
+
+        function createPageButton(pageNumber, currentPage) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = pageNumber;
+            pageButton.onclick = () => renderPage(pageNumber);
+            if (pageNumber === currentPage) {
+                pageButton.disabled = true;
+            }
+            paginationElement.appendChild(pageButton);
         }
     </script>
 </body>

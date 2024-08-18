@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史记录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        .history-list {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .history-item {
+            margin: 5px 0;
+        }
+        .pagination {
+            margin-top: 10px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>历史记录</h1>
+    <div class="history-list" id="history-list"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        const recordsPerPage = 15;
+        let historyData = [];
+
+        // 从主页面获取历史记录数据
+        window.addEventListener('message', (event) => {
+            if (event.data.history) {
+                historyData = event.data.history;
+                renderHistory(1); // 默认显示第一页
+            }
+        });
+
+        function renderHistory(page) {
+            const historyList = document.getElementById('history-list');
+            const pagination = document.getElementById('pagination');
+            historyList.innerHTML = '';
+            pagination.innerHTML = '';
+
+            const startIndex = (page - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, historyData.length);
+            const currentRecords = historyData.slice(startIndex, endIndex);
+
+            currentRecords.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.textContent = record;
+                historyList.appendChild(item);
+            });
+
+            const totalPages = Math.ceil(historyData.length / recordsPerPage);
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                if (i === page) {
+                    button.disabled = true;
+                }
+                button.addEventListener('click', () => renderHistory(i));
+                pagination.appendChild(button);
+            }
+        }
+    </script>
+</body>
+</html>

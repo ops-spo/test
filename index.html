@@ -52,38 +52,59 @@
 
     <script>
         const cards = [
-            { name: '金', probability: 0.01 },
-            { name: '紫', probability: 0.07 },
-            { name: '蓝', probability: 0.92 }
+            { name: '金', baseProbability: 0.01 },
+            { name: '紫', baseProbability: 0.07 },
+            { name: '蓝', baseProbability: 0.92 }
         ];
 
         let historyData = []; // 用于存储历史记录
+        let drawCount = 0; // 记录抽卡次数
+        let noGoldCount = 0; // 记录未出金色卡的次数
 
         function drawCard() {
-            const result = getRandomCard();
+            drawCount++;
+            noGoldCount++;
+            let result;
+
+            // 处理紫色保底
+            if (drawCount % 10 === 0) {
+                result = '紫';
+            } else if (noGoldCount >= 70) {
+                // 70抽必定出金
+                result = '金';
+                noGoldCount = 0; // 重置计数
+            } else if (noGoldCount >= 60) {
+                // 60次不出金，增加金的概率
+                result = getRandomCard(0.01 + 0.1 * (noGoldCount - 60));
+            } else {
+                result = getRandomCard(0.01);
+            }
+
             showCard(result);
             addToHistory(result);
+
+            if (result === '金') {
+                noGoldCount = 0; // 出金则重置计数
+            }
         }
 
         function drawMultipleCards() {
-            const results = [];
             for (let i = 0; i < 10; i++) {
-                results.push(getRandomCard());
+                drawCard();
             }
-            results.forEach(result => {
-                showCard(result);
-                addToHistory(result);
-            });
         }
 
-        function getRandomCard() {
+        function getRandomCard(goldProbability) {
+            const purpleProbability = cards[1].baseProbability;
+            const blueProbability = 1 - goldProbability - purpleProbability;
             const random = Math.random();
-            let cumulativeProbability = 0;
-            for (let card of cards) {
-                cumulativeProbability += card.probability;
-                if (random <= cumulativeProbability) {
-                    return card.name;
-                }
+
+            if (random <= goldProbability) {
+                return '金';
+            } else if (random <= goldProbability + purpleProbability) {
+                return '紫';
+            } else {
+                return '蓝';
             }
         }
 

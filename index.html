@@ -39,6 +39,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
+            transition: transform 0.5s;
         }
         .gold-card {
             background-color: gold;
@@ -48,6 +49,9 @@
         }
         .blue-card {
             background-color: blue;
+        }
+        .card.flip {
+            transform: rotateY(180deg);
         }
         #result {
             margin-top: 20px;
@@ -101,7 +105,11 @@
                 result = getRandomCard(0.01);
             }
 
-            showSingleCard(result);
+            if (result === '金') {
+                showGoldCard(result); // 显示金色卡片的特效
+            } else {
+                showSingleCard(result);
+            }
             addToHistory(result);
 
             if (result === '金') {
@@ -196,6 +204,31 @@
                 cardElement.innerText = result;
                 cardContainer.appendChild(cardElement);
             });
+        }
+
+        function showGoldCard(cardName) {
+            const cardContainer = document.getElementById('card-container');
+            cardContainer.innerHTML = ''; // 清空卡片显示区域
+            const cardElement = document.createElement('div');
+            cardElement.className = 'card';
+            cardElement.classList.add('gold-card');
+
+            // 创建一个闪烁的效果
+            cardElement.innerHTML = `<div class="bling">Bling!</div>`;
+            cardContainer.appendChild(cardElement);
+
+            // 添加动画效果
+            setTimeout(() => {
+                cardElement.classList.add('flip');
+                cardElement.innerText = cardName;
+            }, 1000); // 延迟1秒
+
+            // 重置卡片状态
+            setTimeout(() => {
+                cardElement.classList.remove('flip');
+                cardElement.innerHTML = ''; // 清除动画效果
+                cardElement.innerText = cardName;
+            }, 2000); // 动画持续时间2秒
         }
 
         function addToHistory(cardNames) {

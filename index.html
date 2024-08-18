@@ -38,11 +38,16 @@
             font-size: 1.2em;
             color: #fff;
             text-shadow: 1px 1px 2px #000;
-            background-color: gray;
         }
-        .gold { background-color: gold; }
-        .purple { background-color: purple; }
-        .blue { background-color: blue; }
+        .gold { 
+            background-color: gold; 
+        }
+        .purple { 
+            background-color: purple; 
+        }
+        .blue { 
+            background-color: blue; 
+        }
         #history-container {
             margin: 20px auto;
             width: 90%;
@@ -92,9 +97,9 @@
         <div class="card-row" id="card-row-top"></div>
         <div class="card-row" id="card-row-bottom"></div>
     </div>
-    <button onclick="drawCard()">抽卡</button>
+    <button onclick="drawCard()">单抽</button>
     <button onclick="drawMultipleCards()">十连抽</button>
-    <button onclick="toggleHistory()">显示历史记录</button>
+    <button onclick="toggleHistory()">历史记录</button>
 
     <div id="history-container" style="display: none;">
         <h2>历史记录</h2>
@@ -127,8 +132,6 @@
         }
 
         function drawSingleCard() {
-            // 抽卡逻辑，返回卡片类型（"金"、"紫"、"蓝"）
-            // 这里是简化的逻辑，实际应根据需求实现
             const rand = Math.random();
             if (rand < 0.01) return '金';
             if (rand < 0.08) return '紫';

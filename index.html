@@ -115,6 +115,7 @@
             display: flex;
             justify-content: center;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         .page-btn {
             margin: 0 5px;
@@ -123,6 +124,9 @@
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 5px;
+            flex: 1;
+            max-width: 40px;
+            text-align: center;
         }
         .page-btn:hover {
             background-color: #ddd;
@@ -130,6 +134,10 @@
         .active-page {
             background-color: #ccc;
             cursor: default;
+        }
+        .ellipsis {
+            pointer-events: none;
+            color: #aaa;
         }
         button {
             padding: 10px 15px;
@@ -279,8 +287,6 @@
         function showMultipleCards(results) {
             const cardContainer = document.getElementById('card-container');
             cardContainer.innerHTML = ''; // 清空卡片显示区域
-
-            // 创建上下两排的卡片显示区域
             const topRow = document.createElement('div');
             topRow.className = 'card-row';
             const bottomRow = document.createElement('div');
@@ -378,18 +384,68 @@
             });
 
             // 渲染分页按钮
-            for (let i = 1; i <= totalPages; i++) {
-                const pageBtn = document.createElement('div');
-                pageBtn.className = 'page-btn';
-                if (i === currentPage) {
-                    pageBtn.classList.add('active-page');
+            if (totalPages > 1) {
+                const maxPagesToShow = 5; // 控制显示的页码数量
+                let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+                // 调整开始和结束页码
+                if (endPage - startPage + 1 < maxPagesToShow) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
                 }
-                pageBtn.textContent = i;
-                pageBtn.addEventListener('click', () => {
-                    currentPage = i;
-                    renderHistory();
-                });
-                pagination.appendChild(pageBtn);
+
+                // 首页按钮
+                if (startPage > 1) {
+                    const firstPageBtn = document.createElement('div');
+                    firstPageBtn.className = 'page-btn';
+                    firstPageBtn.textContent = 1;
+                    firstPageBtn.addEventListener('click', () => {
+                        currentPage = 1;
+                        renderHistory();
+                    });
+                    pagination.appendChild(firstPageBtn);
+
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('div');
+                        ellipsis.className = 'page-btn ellipsis';
+                        ellipsis.textContent = '...';
+                        pagination.appendChild(ellipsis);
+                    }
+                }
+
+                // 中间页码按钮
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('div');
+                    pageBtn.className = 'page-btn';
+                    if (i === currentPage) {
+                        pageBtn.classList.add('active-page');
+                    }
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderHistory();
+                    });
+                    pagination.appendChild(pageBtn);
+                }
+
+                // 尾页按钮
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const ellipsis = document.createElement('div');
+                        ellipsis.className = 'page-btn ellipsis';
+                        ellipsis.textContent = '...';
+                        pagination.appendChild(ellipsis);
+                    }
+
+                    const lastPageBtn = document.createElement('div');
+                    lastPageBtn.className = 'page-btn';
+                    lastPageBtn.textContent = totalPages;
+                    lastPageBtn.addEventListener('click', () => {
+                        currentPage = totalPages;
+                        renderHistory();
+                    });
+                    pagination.appendChild(lastPageBtn);
+                }
             }
         }
     </script>

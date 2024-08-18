@@ -60,24 +60,6 @@
             cursor: pointer;
             margin: 10px;
         }
-        .history-container {
-            margin-top: 20px;
-            text-align: left;
-            max-width: 600px;
-            margin: 20px auto;
-        }
-        .history-item {
-            margin: 5px 0;
-        }
-        .pagination {
-            margin-top: 10px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 5px 10px;
-            font-size: 1em;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -90,12 +72,6 @@
     <button onclick="openHistory()">历史记录</button>
     <div id="result"></div>
 
-    <div class="history-container" id="history-container" style="display: none;">
-        <h2>历史记录</h2>
-        <div id="history-list"></div>
-        <div class="pagination" id="pagination"></div>
-    </div>
-
     <script>
         const cards = [
             { name: '金', baseProbability: 0.01 },
@@ -106,7 +82,6 @@
         let historyData = []; // 用于存储历史记录
         let drawCount = 0; // 记录抽卡次数
         let noGoldCount = 0; // 记录未出金色卡的次数
-        const recordsPerPage = 15;
 
         function drawCard() {
             drawCount++;
@@ -213,37 +188,10 @@
         }
 
         function openHistory() {
-            document.getElementById('history-container').style.display = 'block';
-            renderHistory(1); // 默认显示第一页
-        }
-
-        function renderHistory(page) {
-            const historyList = document.getElementById('history-list');
-            const pagination = document.getElementById('pagination');
-            historyList.innerHTML = '';
-            pagination.innerHTML = '';
-
-            const startIndex = (page - 1) * recordsPerPage;
-            const endIndex = Math.min(startIndex + recordsPerPage, historyData.length);
-            const currentRecords = historyData.slice(startIndex, endIndex);
-
-            currentRecords.forEach(record => {
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.textContent = record;
-                historyList.appendChild(item);
+            const historyWindow = window.open('history.html', 'HistoryWindow', 'width=800,height=600');
+            historyWindow.addEventListener('load', () => {
+                historyWindow.postMessage({ history: historyData }, '*');
             });
-
-            const totalPages = Math.ceil(historyData.length / recordsPerPage);
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                if (i === page) {
-                    button.disabled = true;
-                }
-                button.addEventListener('click', () => renderHistory(i));
-                pagination.appendChild(button);
-            }
         }
     </script>
 </body>

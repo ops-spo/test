@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>优化版抽卡小游戏</title>
+    <title>升空模拟器</title>
     <style>
         body {
             text-align: center;
@@ -40,16 +40,18 @@
         }
         #history {
             margin-top: 30px;
+            display: none; /* 初始隐藏 */
         }
     </style>
 </head>
 <body>
-    <h1>优化版抽卡小游戏</h1>
+    <h1>升空模拟器</h1>
     <div id="card-container">
         <div id="card">?</div>
     </div>
-    <button onclick="drawCard()">单抽</button>
-    <button onclick="drawMultipleCards()">十连抽</button>
+    <button onclick="drawCard()">单次升空</button>
+    <button onclick="drawMultipleCards()">十次升空</button>
+    <button onclick="toggleHistory()">显示历史记录</button>
     <div id="result"></div>
     <div id="history">
         <h2>历史记录</h2>
@@ -58,10 +60,9 @@
 
     <script>
         const cards = [
-            { name: 'SSR', probability: 0.05 },
-            { name: 'SR', probability: 0.15 },
-            { name: 'R', probability: 0.30 },
-            { name: 'N', probability: 0.50 }
+            { name: '金', probability: 0.01 },
+            { name: '紫', probability: 0.07 },
+            { name: '蓝', probability: 0.92 }
         ];
 
         function drawCard() {
@@ -107,6 +108,18 @@
             const listItem = document.createElement('li');
             listItem.textContent = cardName;
             historyList.appendChild(listItem);
+        }
+
+        function toggleHistory() {
+            const historyDiv = document.getElementById('history');
+            const button = document.querySelector('button[onclick="toggleHistory()"]');
+            if (historyDiv.style.display === 'none') {
+                historyDiv.style.display = 'block';
+                button.textContent = '隐藏历史记录';
+            } else {
+                historyDiv.style.display = 'none';
+                button.textContent = '显示历史记录';
+            }
         }
     </script>
 </body>

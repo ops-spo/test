@@ -59,7 +59,6 @@
 <body>
     <h1>历史记录</h1>
     <div id="history-container">
-        <!-- 历史记录内容 -->
         <div id="records"></div>
         <div id="pagination" class="pagination"></div>
     </div>
@@ -71,7 +70,6 @@
         let history = [];
 
         window.addEventListener('message', (event) => {
-            console.log('Message received:', event.data); // 调试信息
             if (event.data.history) {
                 history = event.data.history;
                 renderPage(1);
@@ -83,7 +81,6 @@
             const end = start + pageSize;
             const pageRecords = history.slice(start, end);
 
-            // Render records
             recordsElement.innerHTML = '';
             pageRecords.forEach(record => {
                 const recordElement = document.createElement('div');
@@ -93,7 +90,6 @@
                 recordsElement.appendChild(recordElement);
             });
 
-            // Render pagination
             const totalPages = Math.ceil(history.length / pageSize);
             paginationElement.innerHTML = '';
             for (let i = 1; i <= totalPages; i++) {

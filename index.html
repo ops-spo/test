@@ -145,6 +145,21 @@
             cursor: pointer;
             margin: 5px;
         }
+        #stats-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            display: none;
+        }
+        #stats-list {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
         @media (max-width: 600px) {
             .card {
                 width: 50px;
@@ -176,11 +191,16 @@
     <button onclick="drawCard()">单次升空</button>
     <button onclick="drawMultipleCards()">十次升空</button>
     <button onclick="toggleHistory()">历史记录</button>
+    <button onclick="toggleStats()">出金统计</button>
     <div id="result"></div>
     <div id="history-container">
         <h2>历史抽卡记录</h2>
         <div id="history-list"></div>
         <div class="pagination" id="pagination"></div>
+    </div>
+    <div id="stats-container">
+        <h2>出金统计</h2>
+        <div id="stats-list"></div>
     </div>
 
     <script>
@@ -191,7 +211,8 @@
         ];
 
         let historyData = []; // 用于存储历史记录
-        let drawCount = 0; // 记录抽卡次数
+        let goldStats = []; // 记录每次出金的抽数
+        let drawCount = 0; // 记录总抽卡次数
         let noGoldCount = 0; // 记录未出金色卡的次数
         let currentPage = 1; // 当前页码
         const itemsPerPage = 10; // 每页显示的记录数
@@ -207,7 +228,8 @@
             } else if (noGoldCount >= 70) {
                 // 70抽必定出金
                 result = '金';
-                noGoldCount = 0; // 重置计数
+                goldStats.push(noGoldCount); // 记录从上一次出金到当前出金的抽数
+                noGoldCount = 0; // 重置未出金计数
             } else if (noGoldCount >= 60) {
                 // 60次不出金，增加金的概率
                 result = getRandomCard(0.01 + 0.1 * (noGoldCount - 60));
@@ -216,7 +238,8 @@
             }
 
             if (result === '金') {
-                noGoldCount = 0; // 出金则重置计数
+                goldStats.push(noGoldCount); // 记录从上一次出金到当前出金的抽数
+                noGoldCount = 0; // 重置未出金计数
             }
 
             return result;
@@ -268,19 +291,21 @@
             }
         }
 
-        function showSingleCard(cardName) {
+        function showSingleCard(result) {
             const cardContainer = document.getElementById('card-container');
             cardContainer.innerHTML = ''; // 清空卡片显示区域
+
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
-            if (cardName === '金') {
+            if (result === '金') {
                 cardElement.classList.add('gold-card');
-            } else if (cardName === '紫') {
+            } else if (result === '紫') {
                 cardElement.classList.add('purple-card');
-            } else if (cardName === '蓝') {
+            } else if (result === '蓝') {
                 cardElement.classList.add('blue-card');
             }
-            cardElement.innerText = cardName;
+            cardElement.innerText = result;
+
             cardContainer.appendChild(cardElement);
         }
 
@@ -379,7 +404,7 @@
                 } else if (card === '蓝') {
                     historyItem.classList.add('blue');
                 }
-                historyItem.textContent = `第 ${start + index + 1} 抽: ${card}`;
+                historyItem.textContent = `第 ${start + index + 1} 次抽卡结果: ${card}`;
                 historyList.appendChild(historyItem);
             });
 
@@ -447,6 +472,38 @@
                     pagination.appendChild(lastPageBtn);
                 }
             }
+        }
+
+        function toggleStats() {
+            const statsContainer = document.getElementById('stats-container');
+            if (statsContainer.style.display === 'none') {
+                statsContainer.style.display = 'block';
+                renderStats(); // 显示时渲染出金统计
+            } else {
+                statsContainer.style.display = 'none';
+            }
+        }
+
+        function renderStats() {
+            const statsList = document.getElementById('stats-list');
+            statsList.innerHTML = ''; // 清空统计数据
+
+            let totalGolds = goldStats.length;
+            let avgDrawsPerGold = (totalGolds === 0) ? 0 : (goldStats.reduce((acc, curr) => acc + curr, 0) / totalGolds).toFixed(2);
+
+            // 显示每次出金的抽数
+            goldStats.forEach((draws, index) => {
+                const statItem = document.createElement('div');
+                statItem.className = 'stat-item';
+                statItem.textContent = `第 ${index + 1} 次出金：${draws} 抽`;
+                statsList.appendChild(statItem);
+            });
+
+            // 显示平均抽数
+            const avgStatItem = document.createElement('div');
+            avgStatItem.className = 'stat-item';
+            avgStatItem.textContent = `平均出金：${avgDrawsPerGold} 抽`;
+            statsList.appendChild(avgStatItem);
         }
     </script>
 </body>

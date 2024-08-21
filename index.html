@@ -548,15 +548,26 @@
                 <p>每次出金抽数: ${goldStats.join(', ')}</p>
             `;
         }
-
+        
         function updatePokedex() {
             const pokedexContainer = document.getElementById('pokedex-list');
             pokedexContainer.innerHTML = '';
 
+            const screenWidth = window.innerWidth;
+            let cardsPerRow;
+
+            if (screenWidth < 400) {
+                cardsPerRow = 1;
+            } else if (screenWidth < 600) {
+                cardsPerRow = 2;
+            } else {
+                cardsPerRow = 4; // 默认每行4张卡片
+            }
+
             let rowElement;
 
             for (let i = 0; i < goldCards.length; i++) {
-                if (i % 4 === 0) {  // 每行显示4张卡片
+                if (i % cardsPerRow === 0) {
                     rowElement = document.createElement('div');
                     rowElement.className = 'pokedex-row';
                     pokedexContainer.appendChild(rowElement);
@@ -580,6 +591,12 @@
                 rowElement.appendChild(pokedexItem);
             }
         }
+
+        // 调用函数以初始化
+        updatePokedex();
+
+        // 监听窗口大小变化以调整布局
+        window.addEventListener('resize', updatePokedex);
 
         function toggleHistory() {
             const historyContainer = document.getElementById('history-container');

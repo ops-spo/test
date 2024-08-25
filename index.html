@@ -350,16 +350,21 @@
                 padding: 10px; /* 增加padding，使内容不至于太贴边 */
             }
             
-            .pokedex-item {
+            .pokedex-row {
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 10px;
-                margin: 5px;
-                width: 120px; 
+                justify-content: space-between; /* 保证卡片间的均匀分布 */
+                gap: 5px; /* 减少卡片之间的间距 */
+                margin-bottom: 10px;
+            }
+
+            .pokedex-item {
+                width: calc(25% - 10px); /* 保持四列布局 */
+                padding: 5px;
                 border: 1px solid #ccc;
-                border-radius: 8px;
+                border-radius: 5px;
+                text-align: center;
                 background-color: #f9f9f9;
+                margin: 0; /* 消除多余的外边距 */
             }
 
             .pokedex-item-name {

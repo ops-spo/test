@@ -337,7 +337,19 @@
                 flex-direction: column;
                 gap: 5px;
             }
-
+            
+            #pokedex-container {
+                display: flex;
+                flex-direction: column;
+                margin-top: 5px;
+                text-align: center;
+                width: 100%; /* 确保在手机上宽度为100% */
+                max-width: 100%; /* 取消最大宽度限制 */
+                margin-left: 0; /* 移除左右自动margin，使其在手机端居中 */
+                margin-right: 0;
+                padding: 10px; /* 增加padding，使内容不至于太贴边 */
+            }
+            
             .pokedex-item {
                 display: flex;
                 flex-direction: column;

@@ -333,35 +333,23 @@
             #result {
                 font-size: 0.9em;
             }
-            .button-container {
-                flex-direction: column;
-                gap: 5px;
+            .button-container button {
+                padding: 8px 13.5px;
+                font-size: 0.9em;
+                margin: 3px;
+                border-radius: 6px;
             }
 
-            .pokedex-item {
+            .pokedex-row {
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 10px;
-                margin: 5px;
-                width: 120px; 
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                background-color: #f9f9f9;
+                justify-content: flex-start; 
+                gap: 10px;
             }
-
-            .pokedex-item-name {
-                font-weight: bold;
-                font-size: 14px;
-                margin-bottom: 5px;
-                text-align: center;
+            .pokedex-item {
+                width: 50px;
+                font-size: 0.3em; 
             }
-
-            .pokedex-item-count {
-                font-size: 10px;
-                color: #666;
-                text-align: center;
-            }
+        }    
     </style>
 </head>
 <body>
@@ -401,7 +389,7 @@
 
         <div class="footer">
             <button class="circle-button gacha-button" id="gachaButton" onclick="openGacha()">抽卡</button>
-            <button class="circle-button gallery-button" id="galleryButton">❤️</button>
+            <button class="circle-button gallery-button" id="galleryButton">❤</button>
         </div>
     </div>
 
@@ -800,13 +788,15 @@
             const screenWidth = window.innerWidth;
             let cardsPerRow;
 
-            if (screenWidth < 400) {
-                cardsPerRow = 1;
-            } else if (screenWidth < 600) {
+/*            if (screenWidth < 400) {
                 cardsPerRow = 2;
+            } else if (screenWidth < 600) {
+                cardsPerRow = 3;
             } else {
                 cardsPerRow = 4; // 默认每行4张卡片
-            }
+            }*/
+
+            cardsPerRow = 4;
 
             let rowElement;
 

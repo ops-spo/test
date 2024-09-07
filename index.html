@@ -35,7 +35,7 @@
         .header {
             width: 100%;
             padding: 10px;
-            background-color: #eb9e62;
+            background-color: #F28444;
             color: white;
             text-align: left;
             font-size: 18px;
@@ -59,6 +59,29 @@
             animation: float 3s infinite;
         }
 
+        #newsContainer {
+            position: fixed;
+            top: 60px; 
+            left: 50%; 
+            transform: translate(-50%, -50%);  /* 完全居中 */
+            width: 375px
+            background-color: #f1f1f1;
+            overflow: hidden;
+            height: 28px; 
+            display: none;
+        }
+
+        #newsText {
+            position: relative;
+            white-space: nowrap;
+            animation: scroll 15s linear infinite; 
+        }
+
+        @keyframes scroll {
+            from { left: 100%; }
+            to { left: -100%; }
+        }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -75,10 +98,10 @@
         }
 
         .circle-button {
-            width: 60px;
-            height: 60px;
-            background-color: #fbd78f;
-            color: #fdf6ed;
+            width: 63px;
+            height: 63px;
+            background: radial-gradient(circle, #F29E38, #fbd78f); 
+            color: white;
             border: none;
             border-radius: 50%;
             cursor: pointer;
@@ -88,16 +111,99 @@
             align-items: center;
             margin-bottom: 10px;
             position: absolute;
+
+            text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.7);
+        }
+
+        .circle-button:hover {
+            background: linear-gradient(145deg, #ffca9e, #FFFFC1); 
+            transform: scale(1.1); 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.5); 
+        }
+
+        .circle-button:active {
+            background: linear-gradient(145deg, #F28444, #bf6630); 
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4); 
+            transform: scale(0.95);
         }
 
         .gacha-button {
             bottom: 0;
-            right: 20px; 
+            left: 110px; 
         }
 
-        .gallery-button {
-            bottom: 70px;
-            right: 20px; 
+        .love-button {
+            bottom: 0;
+            right: 30px; 
+        }
+
+        .news-button {
+            bottom: 0;
+            left: 30px;
+        }
+
+        .message {
+            display: none;
+            position: absolute;
+            right: 0;
+            bottom: 100px;
+            font-size: 16px;
+            color: #333;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transform: translateX(-50%) translateY(100%); 
+            opacity: 0; 
+        }
+
+        .message.show {
+            display: block;
+            animation: slide-up 2s forwards; 
+        }
+
+        @keyframes slide-up {
+            0% {
+                transform: translateX(-50%) translateY(100%); 
+                opacity: 0; 
+            }
+            50% {
+                transform: translateX(-50%) translateY(0); 
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-50%) translateY(-100%); 
+                opacity: 0; 
+            }
+        }
+
+        .player {
+            position: absolute;
+            left: 50%;
+            top: 70%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .player-button {
+            padding: 15px 15px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            color: #333;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .player-button:hover {
+            background-color: rgba(240, 240, 240, 0.2);
+        }
+
+        .player-button:active {
+            transform: translateY(4px);
         }
 
         .gacha-modal {
@@ -106,7 +212,6 @@
             left: -20px;
             width: 100%;
             height: 100%;
-/*            background-color: rgba(0, 0, 0, 0.7);*/
             background-color: #f0f0f0;
             display: none;
             flex-direction: column;
@@ -117,10 +222,10 @@
 
         .close-button {
             position: absolute;
-            top: 8px;
+            top: 10px;
             right: 22px;
-            background-color: #eb9e62;
-            color: #333;
+            background: linear-gradient(145deg, #f3a870, #e08b4b);
+            color: #fff;
             border: none;
             font-size: 20px;
             font-weight: bold;
@@ -131,49 +236,49 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .close-button:hover {
-            background-color: #fbd78f;
+            background: linear-gradient(145deg, #ffca9e, #e8a978); 
+            transform: scale(1.1); 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.5); 
         }
 
-/*        .result-display {
-            width: 80%;
-            height: 40%;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-left: 10%; 
-            margin-bottom: 20px;
+        .close-button:active {
+            background: linear-gradient(145deg, #d97a42, #bf6630); 
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4); 
+            transform: scale(0.95);
         }
 
-        .new-gacha-options {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-left: 10%; 
+        #special-effect-container {
+            display: none;
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: gold;
+            z-index: 1000;
+            animation: slideUpFadeOut 3s ease-in-out; 
         }
 
-        .new-gacha-options .button {
-            padding: 10px 20px;
-            background: linear-gradient(145deg, #fbd78f, #eb9e62); 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: background 0.3s;
+        @keyframes slideUpFadeOut {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 50px); /* 初始位置在下方 */
+            }
+            30% {
+                opacity: 1;
+                transform: translate(-50%, 0); /* 移动到目标位置 */
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -30px); /* 最终位置稍微向上 */
+            }
         }
-
-        .new-gacha-options .button:hover {
-            background: #B6E4FF;
-        }*/
 
         #card-container {
             margin: 10px auto;
@@ -265,15 +370,12 @@
             background: linear-gradient(145deg, #eb9e62, #fbd78f);
         }
 
-        .history-item.gold {
-            color: #FFD600;
+        .button-container button:active {
+            transform: scale(0.95); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            background: linear-gradient(145deg, #d38850, #f1c27d); 
         }
-        .history-item.purple {
-            color: #C466FA;
-        }
-        .history-item.blue {
-            color: #B6E4FF;
-        }
+
         .page-btn {
             display: inline-block;
             margin: 2px;
@@ -289,7 +391,8 @@
             pointer-events: none;
             cursor: default;
         }
-        #history-container, #stats-container, #pokedex-container {
+        
+        #stats-container {
             display: none;
             margin-top: 10px;
             text-align: center;
@@ -298,7 +401,18 @@
             margin-left: auto;
             margin-right: auto;
         }
-        #history-list, #pokedex-list {
+
+        #pokedex-container {
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #pokedex-list {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -310,7 +424,7 @@
             margin-bottom: 10px;
         }
         .pokedex-item {
-            width: 70px;
+            width: 60px;
             padding: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -320,6 +434,7 @@
             background-color: #eee;
             color: #999;
         }
+
         @media (max-width: 600px) {
             .card {
                 width: 50px;
@@ -334,12 +449,16 @@
                 font-size: 0.9em;
             }
             .button-container button {
-                padding: 10px 16.7px;
+                padding: 9.5px 16.5px;
                 font-size: 1em;
                 margin: 4px;
                 border-radius: 6px;
             }
 
+            #stats-container {
+                font-size: 0.3em;
+            }
+            
             .pokedex-row {
                 display: flex;
                 justify-content: flex-start; 
@@ -355,29 +474,35 @@
 <body>
     <div class="phone-screen">
         <div class="header" id="header">Lv.80 我是谁？</div>
+        <div id="newsContainer">
+            <div id="newsText"></div>
+        </div>
 
         <div class="center">
             <img src="" class="character" id="characterImage">
 
+        <div class="player">
+            <button class="player-button" onclick="playPrevious()">&#9664;</button>
+            <button class="player-button" id="playPauseBtn" onclick="togglePlayPause()">◉</button>
+            <button class="player-button" onclick="playNext()">&#9654;</button>
+        </div>
+
+        <audio id="audioPlayer"></audio>
+
         <div class="gacha-modal" id="gachaModal">
             <button class="close-button" onclick="closeGacha()">x</button>
-            
+            <div id="special-effect-container"></div>
             <div id="card-container">
             </div>
 
             <div class="button-container">
-                <button onclick="drawCard()">单抽</button>
-                <button onclick="drawMultipleCards()">十连</button>
-                <button onclick="toggleStats()">统计</button>
                 <button onclick="togglePokedex()">图鉴</button>
+                <button onclick="toggleStats()">统计</button>
+                <button onclick="drawCard()">单抽</button>
+                <button onclick="drawMultipleCards()">十连</button>                
             </div>
             <div id="result"></div>
-
-            <div id="history-container">
-                <h2>历史记录</h2>
-                <div id="history-list"></div>
-                <div id="pagination"></div>
-            </div>            
+           
             <div id="stats-container">
                 <div id="stats-list"></div>
             </div>
@@ -389,18 +514,97 @@
 
         <div class="footer">
             <button class="circle-button gacha-button" id="gachaButton" onclick="openGacha()">抽卡</button>
-            <button class="circle-button gallery-button" id="galleryButton">❤</button>
+            <button class="circle-button love-button" id="loveButton" onclick="showText()">❤</button>
+            <div id="message" class="message">功德+1</div>
+            <button class="circle-button news-button" id="newsButton">新闻</button>
         </div>
     </div>
 
     <audio id="backgroundMusic" loop>
-        <source src="bgm.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+        <source src="bgm/bgm.mp3" type="audio/mpeg">
     </audio>
 
     <audio id="drawSound" src="gacha.mp3" preload="auto"></audio>
 
     <script>
+        const newsButton = document.getElementById('newsButton');
+        const newsContainer = document.getElementById('newsContainer');
+        const newsText = document.getElementById('newsText');
+        let newsVisible = false;
+
+        const newsList = [
+            "快讯: 兔球球占领乌鲁鲁星",
+            "快讯: 芥末章章统一利莫里亚",
+            "快讯：观测到航天企鹅在外太空飞行",
+            "临空市发现流浪体接近信号,请市民朋友注意隐蔽",
+            "深空隧道发生未知能量波动",
+            "长恒山出现神秘能量爆发",
+            "临空市科研团队发现新型流浪体",
+            "深空隧道传来未知信号，航天署紧急响应",
+            "临空市计划建设新型流浪体探测器",
+            "Twinkle潮玩新款发布，区域专享引发热议",
+            "Akso医院研究芯源介入症源头",
+            "Twinkle潮玩宣布进驻花浦区",
+            "航天署加强长恒山区域监控",
+            "帽儿岛附近海域出现神秘光柱",
+            "猎人协会警告白沙湾生物异变",
+            "Twinkle潮玩发布星际限量版玩偶",
+            "禁猎区现大量未知飞行物",
+            "雪绒镇居民报告长恒山异常",
+            "花浦区发现神秘地下通道",
+            "白沙湾附近发现未知生物群",
+            "长恒山能量波动影响深空航线",
+            "Ever集团展开长恒山深度探测",
+            "流浪体接近导致深空隧道异常",
+            "禁猎区内发现黑猎行踪",
+            "长恒山下发现古老能量装置",
+            "Ever集团收购帽儿岛能源公司,传闻CEO为流浪体",
+            "Akso医院开展芯源介入症临床试验",
+            "今日科技突破，α-P0159号天体观测取得新进展",
+            "AI技术革命：OTTO将改变未来工作方式",
+            "科学家发现可能延长寿命的关键基因",
+            "电影业蓬勃发展，光猎大片票房破纪录",
+            "太空探索再进一步，人类或将在未来十年登上菲罗斯星",
+            "人类基因编辑技术引发伦理争议，科学界热议不断"
+        ];
+
+        let newsIndex = 0;  
+
+        function getNextNews() {
+            newsIndex = (newsIndex + 1) % newsList.length;  // 循环显示新闻
+            return newsList[newsIndex];
+        }
+
+        function startNews() {
+            newsText.textContent = getNextNews();
+            newsContainer.style.display = 'block';
+
+            newsText.addEventListener('animationiteration', () => {
+                newsText.textContent = getNextNews();
+            });
+        }
+
+        newsButton.addEventListener('click', () => {
+            newsVisible = !newsVisible;
+            
+            if (newsVisible) {
+                startNews();
+                newsButton.textContent = '隐藏';
+            } else {
+                newsContainer.style.display = 'none';
+                newsButton.textContent = '新闻';
+            }
+        });
+
+        function showText() {
+            var message = document.getElementById("message");
+            message.classList.add("show");
+            
+            setTimeout(function() {
+                message.classList.remove("show");
+            }, 2000); 
+        }
+
         const characters = [
             'img/1.png',
             'img/2.png',
@@ -427,13 +631,63 @@
 
         document.getElementById('characterImage').src = getRandomCharacter();
 
+
+        const songs = ["bgm/song1.mp3", "bgm/song2.mp3", "bgm/song3.mp3"];
+        let currentSongIndex = 0;
+        let isPlaying = false;
+
+        const audioPlayer = document.getElementById("audioPlayer");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+
+        function playRandomSong() {
+            currentSongIndex = Math.floor(Math.random() * songs.length);
+            loadSong();
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseBtn.textContent = "◉";
+            } else {
+                audioPlayer.play();
+                playPauseBtn.textContent = "⏸";
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function playPrevious() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length; 
+            loadSong();
+        }
+
+        function playNext() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong();
+        }
+
+        function loadSong() {
+            audioPlayer.src = songs[currentSongIndex];
+            audioPlayer.play();
+            playPauseBtn.textContent = "⏸";
+            isPlaying = true;
+        }
+
+        audioPlayer.addEventListener("ended", playNext);
+
+        window.onload = function() {
+            playRandomSong();
+        }
+
         const backgroundMusic = document.getElementById('backgroundMusic');
         const drawSound = document.getElementById('drawSound');
 
         function openGacha() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
             document.getElementById('header').style.display = 'none';
             document.getElementById('gachaButton').style.display = 'none';
-            document.getElementById('galleryButton').style.display = 'none';
+            document.getElementById('loveButton').style.display = 'none';
+            document.getElementById('newsButton').style.display = 'none';
             document.getElementById('gachaModal').style.display = 'flex';
             document.getElementById('characterImage').style.display = 'none'; 
             backgroundMusic.play();
@@ -442,14 +696,15 @@
         function closeGacha() {
             document.getElementById('header').style.display = 'block';
             document.getElementById('gachaButton').style.display = 'block';
-            document.getElementById('galleryButton').style.display = 'block';
+            document.getElementById('loveButton').style.display = 'block';
+            document.getElementById('newsButton').style.display = 'block';
             document.getElementById('gachaModal').style.display = 'none';
-            document.getElementById('characterImage').src = getRandomCharacter(); // 重新设置随机角色图片
-            document.getElementById('characterImage').style.display = 'block'; // 显示角色图片
+            document.getElementById('characterImage').src = getRandomCharacter(); 
+            document.getElementById('characterImage').style.display = 'block'; 
 
-            // 停止音乐
             backgroundMusic.pause();
-            backgroundMusic.currentTime = 0; // 可选：将音乐播放位置重置到开始
+            backgroundMusic.currentTime = 0; 
+            audioPlayer.play();
         }
 
         const cards = [
@@ -465,7 +720,6 @@
             '奶109鸦','樱花兔','睡衣梨','樱花鱼','下雪鸦'
         ];
 
-        let historyData = [];
         let goldStats = [];
         let drawCount = 0;
         let noGoldCount = 0;
@@ -506,16 +760,70 @@
             } else {
                 showSingleCard(result);
             }
-            addToHistory([result]);
         }
+
+        let doubleGoldCount = 0; 
+        let tripleGoldCount = 0; 
+        let quadraGoldCount = 0; 
+        let pentaGoldCount = 0;
+        let hexaGoldCount = 0;
+        let heptaGoldCount = 0;
+        let octaGoldCount = 0;
+        let nonaGoldCount = 0;
+        let decaGoldCount = 0;
 
         function drawMultipleCards() {
             const results = [];
+            let goldCount = 0;
+
             for (let i = 0; i < 10; i++) {
-                results.push(getDrawResult());
+                const result = getDrawResult();
+                if (goldCards.includes(result)) {
+                    goldCount++;
+                }
+                results.push(result);
             }
+
+            if (goldCount === 2) {
+                doubleGoldCount++;
+                showSpecialEffect('十连双金！');
+            } else if (goldCount === 3) {
+                tripleGoldCount++;
+                showSpecialEffect('十连三金！');
+            } else if (goldCount === 4) {
+                quadraGoldCount++;
+                showSpecialEffect('十连四金！');
+            } else if (goldCount === 5) {
+                pentaGoldCount++;
+                showSpecialEffect('十连五金！');
+            } else if (goldCount === 6) {
+                hexaGoldCount++;
+                showSpecialEffect('十连六金！');
+            } else if (goldCount === 7) {
+                heptaGoldCount++;
+                showSpecialEffect('十连七金！');
+            } else if (goldCount === 8) {
+                octaGoldCount++;
+                showSpecialEffect('十连八金！');
+            } else if (goldCount === 9) {
+                nonaGoldCount++;
+                showSpecialEffect('十连九金！');
+            } else if (goldCount === 10) {
+                decaGoldCount++;
+                showSpecialEffect('十连十金！');
+            }
+
             showMultipleCards(results);
-            addToHistory(results);
+        }
+
+        function showSpecialEffect(text) {
+            const effectContainer = document.getElementById('special-effect-container');
+            effectContainer.innerText = text; 
+            effectContainer.style.display = 'block'; 
+
+            setTimeout(() => {
+                effectContainer.style.display = 'none';
+            }, 3000);
         }
 
         function getRandomGoldCard() {
@@ -569,13 +877,13 @@
                 let displayText = '';
                 if (goldCards.includes(result)) {
                     cardElement.classList.add('gold-card');
-                    displayText = '金'; // 初始显示“金”字
+                    displayText = '金'; 
 
                     setTimeout(() => {
-                        cardElement.classList.add('shake'); // 增加震动效果
+                        cardElement.classList.add('shake'); 
                         setTimeout(() => {
                             cardElement.classList.remove('shake');
-                            cardElement.classList.add('flip'); // 增加翻转效果
+                            cardElement.classList.add('flip'); 
                             setTimeout(() => {
                                 cardElement.classList.remove('flip');
                                 if (result.includes('星') || result.includes('兔')) {
@@ -674,96 +982,13 @@
         `;
         document.head.appendChild(style);
 
-        function addToHistory(results) {
-            historyData.push(...results);
-            updateHistory();
-        }
-
         function recordGoldDraw(goldCard) {
             goldStats.push(noGoldCount);
             noGoldCount = 0;
             pokedex[goldCard] += 1;
             updateStats();
             updatePokedex();
-        }
-
-        function updateHistory() {
-            const historyContainer = document.getElementById('history-list');
-            historyContainer.innerHTML = '';
-
-            const itemsPerPage = 10;
-            const totalPages = Math.ceil(historyData.length / itemsPerPage);
-            let currentPage = 1;
-
-            function renderPage(page) {
-                historyContainer.innerHTML = '';
-                const start = (page - 1) * itemsPerPage;
-                const end = Math.min(start + itemsPerPage, historyData.length);
-
-                for (let i = start; i < end; i++) {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    if (goldCards.includes(historyData[i])) {
-                        historyItem.classList.add('gold');
-                    } else if (historyData[i] === '紫') {
-                        historyItem.classList.add('purple');
-                    } else if (historyData[i] === '蓝') {
-                        historyItem.classList.add('blue');
-                    }
-                    historyItem.innerText = historyData[i];
-                    historyContainer.appendChild(historyItem);
-                }
-
-                const paginationContainer = document.getElementById('pagination');
-                paginationContainer.innerHTML = '';
-
-                const createPageButton = (pageNum) => {
-                    const pageButton = document.createElement('span');
-                    pageButton.className = 'page-btn' + (pageNum === currentPage ? ' active-page' : '');
-                    pageButton.innerText = pageNum;
-                    pageButton.onclick = () => {
-                        currentPage = pageNum;
-                        renderPage(currentPage);
-                    };
-                    return pageButton;
-                };
-
-                const maxPagesToShow = 5;
-                const halfWindow = Math.floor(maxPagesToShow / 2);
-
-                let startPage = Math.max(1, currentPage - halfWindow);
-                let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
-                if (endPage - startPage < maxPagesToShow - 1) {
-                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
-                }
-
-                if (startPage > 1) {
-                    paginationContainer.appendChild(createPageButton(1));
-                    if (startPage > 2) {
-                        const ellipsis = document.createElement('span');
-                        ellipsis.innerText = '...';
-                        ellipsis.className = 'ellipsis';
-                        paginationContainer.appendChild(ellipsis);
-                    }
-                }
-
-                for (let i = startPage; i <= endPage; i++) {
-                    paginationContainer.appendChild(createPageButton(i));
-                }
-
-                if (endPage < totalPages) {
-                    if (endPage < totalPages - 1) {
-                        const ellipsis = document.createElement('span');
-                        ellipsis.innerText = '...';
-                        ellipsis.className = 'ellipsis';
-                        paginationContainer.appendChild(ellipsis);
-                    }
-                    paginationContainer.appendChild(createPageButton(totalPages));
-                }
-            }
-
-            renderPage(currentPage);
+            updateGoldStats();
         }
 
         function updateStats() {
@@ -773,32 +998,52 @@
             const totalGolds = goldStats.length;
             const averageDraws = totalGolds > 0 ? (goldStats.reduce((sum, value) => sum + value, 0) / totalGolds).toFixed(2) : 0;
 
+            let goldStatsString = goldStats.join(', ');
+            const maxStringLength = 135; // 统计中最大字符长度
+            let goldStatsDisplay = goldStatsString;
+
+            if (goldStatsString.length > maxStringLength) {
+                const start = goldStats.slice(0, 16); // 显示前x项
+                const end = goldStats.slice(-16);    // 显示最后x项
+                goldStatsDisplay = `${start.join(', ')}, ..., ..., ${end.join(', ')}`;
+            }
+
             statsContainer.innerHTML = `
                 <p>总抽数: ${drawCount}</p>
                 <p>总出金次数: ${totalGolds}</p>
                 <p>平均出金次数: ${averageDraws}</p>
-                <p>每次出金抽数: ${goldStats.join(', ')}</p>
+                <p>每次出金抽数: ${goldStatsDisplay}</p>
             `;
         }
         
+        function updateGoldStats() {
+            const statsContainer = document.getElementById('stats-list');
+            if (doubleGoldCount > 0){
+                statsContainer.innerHTML += `
+                    <p>双金${doubleGoldCount}次！</p>`;
+            }
+            if (tripleGoldCount > 0){
+                statsContainer.innerHTML += `
+                    <p>三金${tripleGoldCount}次！</p>`;
+            }
+            if (quadraGoldCount > 0){
+                statsContainer.innerHTML += `
+                    <p>四金${quadraGoldCount}次！</p>`;
+            }
+            if (pentaGoldCount > 0){
+                statsContainer.innerHTML += `
+                    <p>五金${pentaGoldCount}次！</p>`;
+            }
+        }
+
         function updatePokedex() {
             const pokedexContainer = document.getElementById('pokedex-list');
             pokedexContainer.innerHTML = '';
 
             const screenWidth = window.innerWidth;
-            let cardsPerRow;
-
-/*            if (screenWidth < 400) {
-                cardsPerRow = 2;
-            } else if (screenWidth < 600) {
-                cardsPerRow = 3;
-            } else {
-                cardsPerRow = 4; // 默认每行4张卡片
-            }*/
-
-            cardsPerRow = 4;
-
+            let cardsPerRow = 4;
             let rowElement;
+            let allObtained = true;
 
             for (let i = 0; i < goldCards.length; i++) {
                 if (i % cardsPerRow === 0) {
@@ -823,38 +1068,50 @@
                 pokedexItem.appendChild(countElement);
 
                 rowElement.appendChild(pokedexItem);
+
+                if (pokedex[card] === 0) {
+                    allObtained = false;
+                }
+            }
+            if (allObtained) {
+              showSpecialEffect('恭喜达成全图鉴！');
             }
         }
 
-        // 调用函数以初始化
         updatePokedex();
-
-        // 监听窗口大小变化以调整布局
         window.addEventListener('resize', updatePokedex);
-
-        function toggleHistory() {
-            const historyContainer = document.getElementById('history-container');
-            historyContainer.style.display = historyContainer.style.display === 'block' ? 'none' : 'block';
-        }
 
         function toggleStats() {
             const statsContainer = document.getElementById('stats-container');
-            statsContainer.style.display = statsContainer.style.display === 'block' ? 'none' : 'block';
+            const pokedexContainer = document.getElementById('pokedex-container');
+            
+            if (statsContainer.style.display === 'none' || statsContainer.style.display === '') {
+                statsContainer.style.display = 'block';
+                pokedexContainer.style.display = 'none';
+            } else {
+                statsContainer.style.display = 'none';
+            }
         }
 
         function togglePokedex() {
             const pokedexContainer = document.getElementById('pokedex-container');
-            pokedexContainer.style.display = pokedexContainer.style.display === 'block' ? 'none' : 'block';
+            const statsContainer = document.getElementById('stats-container');
+            
+            if (pokedexContainer.style.display === 'none' || pokedexContainer.style.display === '') {
+                pokedexContainer.style.display = 'block';
+                statsContainer.style.display = 'none';
+            } else {
+                pokedexContainer.style.display = 'none';
+            }
         }
-        // 保持现有随机图片选择逻辑
+
         function getRandomCharacter() {
             const index = Math.floor(Math.random() * characters.length);
             return characters[index];
         }
 
-        // 初始化角色图片
         document.getElementById('characterImage').src = getRandomCharacter();
+
     </script>
 </body>
 </html>
-
